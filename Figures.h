@@ -1,5 +1,6 @@
 #pragma once
 #include<ostream>
+#include<istream>
 #include<vector>
 #include<string>
 
@@ -20,7 +21,7 @@ public:
 
 	void create(const Figure& other);
 
-	void erase(size_t ind);
+	bool erase(size_t ind);
 
 	void translate(size_t ind, double x, double y);
 
@@ -29,6 +30,8 @@ public:
 	void isWithinCircle(double x, double y, double r) const;
 
 	void isWithinRectangle(double x, double y, double width, double height) const;
+
+	void deserialize(std::istream& in);
 
 	std::string serializeSVG() const;
 

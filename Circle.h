@@ -2,6 +2,8 @@
 #include "Figure.h"
 #include <string>
 #include <ostream>
+#include <istream>
+
 
 class Circle : public Figure {
 public:
@@ -21,6 +23,7 @@ public:
 
 	std::string type() const override;
 
+	static Circle deserialize(std::istream& is);
 private:
 	double cx, cy, radius;
 	std::string fill;

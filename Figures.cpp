@@ -1,7 +1,11 @@
 #include "Figures.h"
+#include "Line.h"
+#include "Rectangle.h"
+#include "Circle.h"
 #include<vector>
 #include<string>
 #include<iostream>
+#include<istream>
 
 
 Figures::Figures() {}
@@ -49,20 +53,21 @@ void Figures::create(const Figure& other) {
 	figures.push_back(other.clone());
 }
 
-void Figures::erase(size_t ind) {
+bool Figures::erase(size_t ind) {
 
 	if (ind == 0 || ind > figures.size()) {
-		std::cout << "No such index\n";
-		return;
+		//No such index;
+		return false;
 	}
 	ind--;
 	delete figures[ind];
 	figures.erase(figures.begin() + ind);
+	return true;
 }
 
 void Figures::translate(size_t ind, double x, double y) {
 	if (ind == 0 || ind > figures.size()) {
-		std::cout << "No such index\n";
+		std::cout << "There is no figure number " << ind << "!\n";
 		return;
 	}
 	ind--;
@@ -87,9 +92,9 @@ void Figures::isWithinCircle(double x, double y, double r) const {
 		}
 	}
 	if (!any) {
-		std::cout << "No figures are located within circle " << x << " " << y << " " << r << "\n";
+		std::cout << "No figures are located within circle " << x << " " << y << " " << r;
 	}
-
+	std::cout << "\n";
 }
 
 void Figures::isWithinRectangle(double x, double y, double width, double height) const {
@@ -103,9 +108,9 @@ void Figures::isWithinRectangle(double x, double y, double width, double height)
 		}
 	}
 	if (!any) {
-		std::cout << "No figures are located within rectangle " << x << " " << y << " " << width << " " << height << "\n";
+		std::cout << "No figures are located within rectangle " << x << " " << y << " " << width << " " << height;
 	}
-
+	std::cout << "\n";
 }
 
 std::string  Figures::serializeSVG() const {
@@ -121,4 +126,23 @@ void Figures::clear() {
 		delete figures[i];
 	}
 	figures.clear();
+}
+
+void Figures::deserialize(std::istream& in) {
+	clear();
+
+	std::string token;
+	while (in >> token) {
+
+		if (token == "<rect") {
+			create(Rectangle::deserialize(in));
+		}
+		else if (token == "<circle") {
+			create(Circle::deserialize(in));
+		}
+		else if (token == "<line") {
+			create(Line::deserialize(in));
+		}
+	}
+
 }

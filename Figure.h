@@ -1,10 +1,9 @@
 #pragma once
-#include<string>
-#include<ostream>
+#include <string>
+#include <ostream>
 
 class Figure {
 public:
-
 	virtual void translate(double x, double y) = 0;
 
 	virtual void print(std::ostream& os) const = 0;
@@ -20,4 +19,5 @@ public:
 	virtual ~Figure() = default;
 
 	virtual std::string type() const = 0;
+
 };

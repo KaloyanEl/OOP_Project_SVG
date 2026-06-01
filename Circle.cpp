@@ -1,6 +1,7 @@
 #include <string>
 #include <ostream>
 #include "Circle.h"
+#include "SvgFun.h"
 
 Circle::Circle(double cx, double cy, double radius, const std::string& fill) :
 	cx(cx), cy(cy), radius(radius), fill(fill) {
@@ -45,7 +46,6 @@ bool Circle::isWithinRectangle(double x, double y, double width, double height) 
 	return true;
 }
 
-
 std::string Circle::serializeSVG() const {
 	return "<circle cx=\"" +
 		std::to_string(cx) +
@@ -64,4 +64,32 @@ Figure* Circle::clone() const {
 
 std::string Circle::type() const {
 	return "circle";
+}
+
+Circle Circle::deserialize(std::istream& is) {
+	std::string token;
+
+	double cx = 0, cy = 0, radius = 0;
+	std::string fill = "none";
+
+	while (is >> token) {
+
+		if (token.find("cx=") != std::string::npos) {
+			cx = std::stod(extractToken(token));
+		}
+		else if (token.find("cy=") != std::string::npos) {
+			cy = std::stod(extractToken(token));
+		}
+		else if (token.find("r=") != std::string::npos) {
+			radius = std::stod(extractToken(token));
+		}
+		else if (token.find("fill=") != std::string::npos) {
+			fill = extractToken(token);
+		}
+		if (token.find("/>") != std::string::npos) {
+			break;
+		}
+	}
+
+	return Circle(cx, cy, radius, fill);
 }

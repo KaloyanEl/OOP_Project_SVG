@@ -1,9 +1,12 @@
 #include "Rectangle.h"
-#include <sstream>
+#include "SvgFun.h"
+#include <ostream>
+#include <istream>
 
 Rectangle::Rectangle(double x, double y, double width, double height, const std::string& fill) :
 	x(x), y(y), width(width), height(height), fill(fill) {
 }
+
 void Rectangle::translate(double dx, double dy) {
 	x += dx;
 	y += dy;
@@ -31,12 +34,12 @@ bool Rectangle::isWithinCircle(double cx, double cy, double r) const {
 
 bool Rectangle::isWithinRectangle(double x, double y, double width, double height) const {
 	if (this->x < x || this->y < y) {
-		return 0;
+		return false;
 	}
 	if (this->x + this->width > x + width || this->y + this->height > y + height) {
-		return 0;
+		return false;
 	}
-	return 1;
+	return true;
 }
 
 std::string Rectangle::serializeSVG() const {
@@ -59,4 +62,34 @@ Figure* Rectangle::clone() const {
 
 std::string Rectangle::type() const {
 	return "rectangle";
+}
+
+Rectangle Rectangle::deserialize(std::istream& is) {
+	std::string token;
+
+	double x = 0, y = 0, width = 0, height = 0;
+	std::string fill = "none";
+
+	while (is >> token) {
+
+		if (token.find("x=") != std::string::npos) {
+			x = std::stod(extractToken(token));
+		}
+		else if (token.find("y=") != std::string::npos) {
+			y = std::stod(extractToken(token));
+		}
+		else if (token.find("width=") != std::string::npos) {
+			width = std::stod(extractToken(token));
+		}
+		else if (token.find("height=") != std::string::npos) {
+			height = std::stod(extractToken(token));
+		}
+		else if (token.find("fill=") != std::string::npos) {
+			fill = extractToken(token);
+		}
+		if (token.find("/>") != std::string::npos) {
+			break;
+		}
+	}
+	return Rectangle(x, y, width, height, fill);
 }

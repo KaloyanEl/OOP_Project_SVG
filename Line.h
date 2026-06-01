@@ -1,5 +1,7 @@
 #pragma once
 #include "Figure.h"
+#include <ostream>
+#include <istream>
 
 class Line : public Figure {
 public:
@@ -20,6 +22,7 @@ public:
 
 	std::string type() const override;
 
+	static Line deserialize(std::istream& is);
 
 private:
 	double x1, y1, x2, y2;

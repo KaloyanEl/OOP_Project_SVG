@@ -1,5 +1,8 @@
 #include "Line.h"
 #include "Figure.h"
+#include "SvgFun.h"
+#include <istream>
+#include <ostream>
 
 Line::Line(double x1, double y1, double x2, double y2) : x1(x1), y1(y1), x2(x2), y2(y2) {}
 
@@ -59,4 +62,32 @@ Figure* Line::clone() const {
 
 std::string Line::type() const {
 	return "line";
+}
+
+Line Line::deserialize(std::istream& is) {
+
+	std::string token;
+
+	double x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+
+	while (is >> token) {
+
+		if (token.find("x1=") != std::string::npos) {
+			x1 = std::stod(extractToken(token));
+		}
+		else if (token.find("y1=") != std::string::npos) {
+			y1 = std::stod(extractToken(token));
+		}
+		else if (token.find("x2=") != std::string::npos) {
+			x2 = std::stod(extractToken(token));
+		}
+		else if (token.find("y2=") != std::string::npos) {
+			y2 = std::stod(extractToken(token));
+		}
+		if (token.find("/>") != std::string::npos) {
+			break;
+		}
+	}
+
+	return Line(x1, y1, x2, y2);
 }

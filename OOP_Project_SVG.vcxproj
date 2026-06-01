@@ -144,6 +144,8 @@
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="OOP_Project_SVG.cpp" />
     <ClCompile Include="Rectangle.cpp" />
+    <ClCompile Include="SvgFun.cpp" />
+    <ClCompile Include="SvgParser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Circle.h" />
@@ -151,6 +153,8 @@
     <ClInclude Include="Figures.h" />
     <ClInclude Include="Line.h" />
     <ClInclude Include="Rectangle.h" />
+    <ClInclude Include="SvgFun.h" />
+    <ClInclude Include="SvgParser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,14 +1,12 @@
 #pragma once
 #include "Figure.h"
-#include<string>
-#include<ostream>
-
+#include <string>
+#include <ostream>
+#include <istream>
 
 class Rectangle : public Figure {
 public:
-
 	Rectangle(double x, double y, double width, double height, const std::string& fill);
-
 
 	void translate(double x, double y) override;
 
@@ -24,10 +22,8 @@ public:
 
 	std::string type() const override;
 
-
+	static Rectangle deserialize(std::istream& is);
 private:
 	double x, y, width, height;
 	std::string fill;
-
-
 };
