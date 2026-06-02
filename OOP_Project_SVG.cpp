@@ -5,39 +5,21 @@
 #include <sstream>
 
 #include "Figures.h"
+#include "App.h"
 #include "Rectangle.h"
 #include "Circle.h"
 #include "Line.h"
-#include "SvgFun.h"
-#include "SvgParser.h"
-
-
-
-bool saveToFile(const std::string& fileName, const std::string& unrecognizedInfoUp, const std::string& unrecognizedInfoDown, const Figures& figuresFile) {
-    std::ofstream file(fileName);
-    if (!file.is_open()) {
-        return false;
-    }
-    file << unrecognizedInfoUp;
-    file << figuresFile.serializeSVG();
-    file << unrecognizedInfoDown;
-    return true;
-}
+#include "Utils.h"
 
 int main() {
 
-    Figures figuresFile = Figures();
-    std::string unrecognizedInfoDown;
-    std::string unrecognizedInfoUp;
-
-    std::string fileName;
-    bool isFileOpen = false;
+    App svgApp;
     while (true) {
         std::cout << ">";
 
         std::string commandLine;
         std::getline(std::cin, commandLine);
-
+        normalize(commandLine);
         std::stringstream ss(commandLine);
 
         std::string command;
@@ -46,7 +28,6 @@ int main() {
         }
 
         if (command == "open") {
-
             std::string newFileName;
             std::getline(ss, newFileName);
 
@@ -59,16 +40,18 @@ int main() {
                 continue;
             }
 
+            int result = svgApp.open(newFileName);
 
-
-            if (!deserialize(newFileName, unrecognizedInfoUp, unrecognizedInfoDown, figuresFile)) {
-
-                std::cout << "Error: " << newFileName << " is invalid SVG or cannot be opened!" << "\n";
+            if (result == 2) {
+                std::cout << "Error: " << newFileName << " is invalid SVG or corrupted!" << "\n";
                 return 1;
             }
-            fileName = newFileName;
-            isFileOpen = true;
-            std::cout << "Successfully opened " << fileName << "\n";
+            if (result == 1) {
+                std::cout << "Error: " << newFileName << " contains invalid characters or cannot be created or opened!\n";
+                continue;
+            }
+
+            std::cout << "Successfully opened " << newFileName << "\n";
         }
         else if (command == "exit") {
             std::cout << "Exiting the program...";
@@ -90,22 +73,21 @@ int main() {
                 << "  exit             exits the program\n";
             continue;
         }
-        else if (!isFileOpen) {
+        else if (!svgApp.hasOpenedFile()) {
             std::cout << "No file is currently open. Use open <file> \n";
             continue;
         }
         else if (command == "print") {
-            figuresFile.print(std::cout);
+            svgApp.print(std::cout);
         }
         else if (command == "create") {
-
             std::string typeFig;
             ss >> typeFig;
             if (typeFig == "rectangle") {
                 double x, y, width, height;
                 std::string fill;
-                if (ss >> x >> y >> width >> height >> fill) {
-                    figuresFile.create(Rectangle(x, y, width, height, fill));
+                if (ss >> x >> y >> width >> height >> fill && width > 0 && height > 0) {
+                    svgApp.create(Rectangle(x, y, width, height, fill));
                     std::cout << "Successfully created rectangle!\n";
                 }
                 else {
@@ -115,8 +97,8 @@ int main() {
             else if (typeFig == "circle") {
                 double x, y, radius;
                 std::string fill;
-                if (ss >> x >> y >> radius >> fill) {
-                    figuresFile.create(Circle(x, y, radius, fill));
+                if (ss >> x >> y >> radius >> fill && radius > 0) {
+                    svgApp.create(Circle(x, y, radius, fill));
                     std::cout << "Successfully created circle!\n";
                 }
                 else {
@@ -126,7 +108,7 @@ int main() {
             else if (typeFig == "line") {
                 double x1, y1, x2, y2;
                 if (ss >> x1 >> y1 >> x2 >> y2) {
-                    figuresFile.create(Line(x1, y1, x2, y2));
+                    svgApp.create(Line(x1, y1, x2, y2));
                     std::cout << "Successfully created line!\n";
 
                 }
@@ -143,7 +125,7 @@ int main() {
             if (!(ss >> ind)) {
                 std::cout << "Error: No index provided.\n";
             }
-            else if (figuresFile.erase(ind)) {
+            else if (svgApp.erase(ind)) {
                 std::cout << "Successfully erased figure " << ind << "\n";
             }
             else {
@@ -155,8 +137,8 @@ int main() {
             ss >> specifier;
             if (specifier == "rectangle") {
                 double x, y, width, height;
-                if (ss >> x >> y >> width >> height) {
-                    figuresFile.isWithinRectangle(x, y, width, height);
+                if (ss >> x >> y >> width >> height && height > 0 && width > 0) {
+                    svgApp.isWithinRectangle(x, y, width, height);
                 }
                 else {
                     std::cout << "Invalid parameters.\n";
@@ -164,8 +146,8 @@ int main() {
             }
             else if (specifier == "circle") {
                 double x, y, radius;
-                if (ss >> x >> y >> radius) {
-                    figuresFile.isWithinCircle(x, y, radius);
+                if (ss >> x >> y >> radius && radius > 0) {
+                    svgApp.isWithinCircle(x, y, radius);
                 }
                 else {
                     std::cout << "Invalid parameters.\n";
@@ -179,6 +161,7 @@ int main() {
         else if (command == "translate") {
             std::string token;
             int ind = 0;
+            bool isInd = 0;
             double horizontal = 0, vertical = 0;
 
             try {
@@ -187,6 +170,7 @@ int main() {
                     if (token[0] == '-' || std::isdigit(token[0]))
                     {
                         ind = std::stoi(token);
+                        isInd = 1;
                     }
                     else if (token.find("horizontal=") != std::string::npos)
                     {
@@ -199,22 +183,29 @@ int main() {
                 }
             }
             catch (const std::exception& e) {
-                std::cout << "Invalid parameters for translate\n";
+                std::cout << "Invalid parameters for translate";
                 continue;
             }
 
-            if (ind == 0) {
-                figuresFile.translate(horizontal, vertical);
+            if (!isInd) {
+                svgApp.translate(horizontal, vertical);
                 std::cout << "Translated all figures\n";
             }
             else {
-                figuresFile.translate(ind, horizontal, vertical);
-                std::cout << "Translated figure " << ind << "\n";
+                if (svgApp.translate(ind, horizontal, vertical)) {
+                    std::cout << "Translated figure " << ind << "\n";
+                }
+                else {
+                    std::cout << "There is no figure number " << ind << "!\n";
+                }
             }
         }
         else if (command == "save") {
-            if (saveToFile(fileName, unrecognizedInfoUp, unrecognizedInfoDown, figuresFile)) {
-                std::cout << "Successfully saved " << fileName << "\n";
+            if (svgApp.saveTo(svgApp.getFileName())) {
+                std::cout << "Successfully saved " << svgApp.getFileName() << "\n";
+            }
+            else {
+                std::cout << "Unsuccessfull save\n";
             }
 
         }
@@ -225,7 +216,7 @@ int main() {
                 continue;
             }
             if (newFile[0] != '\"') {
-                if (!saveToFile(newFile, unrecognizedInfoUp, unrecognizedInfoDown, figuresFile)) {
+                if (!svgApp.saveTo(newFile)) {
                     std::cout << "Error: Could not open file " << newFile << " for writing.\n";
                 }
                 else {
@@ -237,7 +228,7 @@ int main() {
                 getline(ss, fileDirect);
                 newFile = newFile + fileDirect;
                 newFile = extractToken(newFile);
-                if (!saveToFile(newFile, unrecognizedInfoUp, unrecognizedInfoDown, figuresFile)) {
+                if (!svgApp.saveTo(newFile)) {
                     std::cout << "Error: Could not open file " << newFile << " for writing.\n";
                 }
                 else {
@@ -246,11 +237,7 @@ int main() {
             }
         }
         else if (command == "close") {
-            fileName.clear();
-            figuresFile.clear();
-            isFileOpen = false;
-            unrecognizedInfoUp.clear();
-            unrecognizedInfoDown.clear();
+            svgApp.close();
             std::cout << "Successfully closed file.\n";
         }
         else {

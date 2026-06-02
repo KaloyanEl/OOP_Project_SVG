@@ -1,48 +1,49 @@
 #include "Line.h"
 #include "Figure.h"
-#include "SvgFun.h"
+#include "Utils.h"
 #include <istream>
 #include <ostream>
 
 Line::Line(double x1, double y1, double x2, double y2) : x1(x1), y1(y1), x2(x2), y2(y2) {}
 
 
-void Line::translate(double x, double y) {
-	x1 += x;
-	y1 += y;
-	x2 += x;
-	y2 += y;
+void Line::translate(double dx, double dy) {
+	x1 += dx;
+	y1 += dy;
+	x2 += dx;
+	y2 += dy;
 }
 
 void Line::print(std::ostream& os) const {
 	os << "line " << x1 << " " << y1 << " " << x2 << " " << y2;
 }
-
+// Проверява дали двете точки са в кръга. Ако е така то цялата фигура е там.
 bool Line::isWithinCircle(double x, double y, double r) const {
 	if ((x1 - x) * (x1 - x) + (y1 - y) * (y1 - y) > r * r) {
-		return 0;
+		return false;
 	}
 	if ((x2 - x) * (x2 - x) + (y2 - y) * (y2 - y) > r * r) {
-		return 0;
+		return false;
 	}
-	return 1;
+	return true;
 }
 
+// Проверява дали двете точки са в правоъгълника. Ако е така то цялата фигура е там.
 bool Line::isWithinRectangle(double x, double y, double width, double height) const {
 	if (x1<x || x1>x + width) {
-		return 0;
+		return false;
 	}
 	if (y1<y || y1>y + height) {
-		return 0;
+		return false;
 	}
 
 	if (x2<x || x2>x + width) {
-		return 0;
+		return false;
 	}
 	if (y2<y || y2>y + height) {
-		return 0;
+		return false;
 	}
-	return 1;
+	return true;
 }
 std::string Line::serializeSVG() const {
 	return "<line x1=\"" +
@@ -64,6 +65,10 @@ std::string Line::type() const {
 	return "line";
 }
 
+
+// От другите функции имаме гаранция, че ще има затварящ />
+// Ако стойността е невалидна std::stod ще хвърли expetion, които 
+// ше бъде хванат.
 Line Line::deserialize(std::istream& is) {
 
 	std::string token;

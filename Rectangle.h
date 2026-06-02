@@ -3,12 +3,14 @@
 #include <string>
 #include <ostream>
 #include <istream>
-
+/*
+Клас, представящ геометричната фигура правоъгълник (Rectangle)
+*/
 class Rectangle : public Figure {
 public:
 	Rectangle(double x, double y, double width, double height, const std::string& fill);
 
-	void translate(double x, double y) override;
+	void translate(double dx, double dy) override;
 
 	void print(std::ostream& os) const override;
 
@@ -24,6 +26,6 @@ public:
 
 	static Rectangle deserialize(std::istream& is);
 private:
-	double x, y, width, height;
-	std::string fill;
+	double x, y, width, height; // кординати на единия връх и далжините на страните
+	std::string fill; // цвят
 };

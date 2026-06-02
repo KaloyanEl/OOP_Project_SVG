@@ -1,15 +1,15 @@
 #include <string>
 #include <ostream>
 #include "Circle.h"
-#include "SvgFun.h"
+#include "Utils.h"
 
 Circle::Circle(double cx, double cy, double radius, const std::string& fill) :
 	cx(cx), cy(cy), radius(radius), fill(fill) {
 }
 
-void Circle::translate(double x, double y) {
-	cx += x;
-	cy += y;
+void Circle::translate(double dx, double dy) {
+	cx += dx;
+	cy += dy;
 }
 
 void Circle::print(std::ostream& os) const {
@@ -65,7 +65,9 @@ Figure* Circle::clone() const {
 std::string Circle::type() const {
 	return "circle";
 }
-
+// От другите функции имаме гаранция, че ще има затварящ />
+// Ако стойността е невалидна std::stod ще хвърли expetion, които 
+// ше бъде хванат.
 Circle Circle::deserialize(std::istream& is) {
 	std::string token;
 

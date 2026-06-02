@@ -30,10 +30,10 @@
     <ClCompile Include="Figures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SvgFun.cpp">
+    <ClCompile Include="Utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SvgParser.cpp">
+    <ClCompile Include="App.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -53,10 +53,10 @@
     <ClInclude Include="Figures.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SvgFun.h">
+    <ClInclude Include="Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SvgParser.h">
+    <ClInclude Include="App.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

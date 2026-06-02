@@ -5,6 +5,8 @@
 #include<string>
 
 #include "Figure.h"
+// Полиморфен списък подържащ актуалните фигури
+
 class Figures {
 public:
 	Figures();
@@ -23,9 +25,9 @@ public:
 
 	bool erase(size_t ind);
 
-	void translate(size_t ind, double x, double y);
+	bool translate(size_t ind, double dx, double dy);
 
-	void translate(double x, double y);
+	void translate(double dx, double dy);
 
 	void isWithinCircle(double x, double y, double r) const;
 

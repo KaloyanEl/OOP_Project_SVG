@@ -3,12 +3,15 @@
 #include <ostream>
 #include <istream>
 
+/*
+Клас, представящ геометричната фигура отсечка (Line)
+*/
 class Line : public Figure {
 public:
 	Line(double x1, double y1, double x2, double y2);
 
 
-	void translate(double x, double y) override;
+	void translate(double dx, double dy) override;
 
 	void print(std::ostream& os) const override;
 
@@ -25,6 +28,6 @@ public:
 	static Line deserialize(std::istream& is);
 
 private:
-	double x1, y1, x2, y2;
+	double x1, y1, x2, y2; // Кординати на двата края на остечката
 
 };

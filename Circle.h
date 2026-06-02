@@ -4,12 +4,14 @@
 #include <ostream>
 #include <istream>
 
-
+/*
+Клас, представящ геометричната фигура Кръг (Circle)
+*/
 class Circle : public Figure {
 public:
 	Circle(double cx, double cy, double radius, const std::string& fill);
 
-	void translate(double x, double y) override;
+	void translate(double dx, double dy) override;
 
 	void print(std::ostream& os) const override;
 
@@ -25,6 +27,6 @@ public:
 
 	static Circle deserialize(std::istream& is);
 private:
-	double cx, cy, radius;
-	std::string fill;
+	double cx, cy, radius; // X и Y кординати и радиус на кръга
+	std::string fill; // Цвят за запълване на фигурата
 };

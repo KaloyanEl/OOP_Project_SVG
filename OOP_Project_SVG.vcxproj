@@ -139,22 +139,22 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="App.cpp" />
     <ClCompile Include="Circle.cpp" />
     <ClCompile Include="Figures.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="OOP_Project_SVG.cpp" />
     <ClCompile Include="Rectangle.cpp" />
-    <ClCompile Include="SvgFun.cpp" />
-    <ClCompile Include="SvgParser.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="App.h" />
     <ClInclude Include="Circle.h" />
     <ClInclude Include="Figure.h" />
     <ClInclude Include="Figures.h" />
     <ClInclude Include="Line.h" />
     <ClInclude Include="Rectangle.h" />
-    <ClInclude Include="SvgFun.h" />
-    <ClInclude Include="SvgParser.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

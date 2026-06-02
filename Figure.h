@@ -2,6 +2,13 @@
 #include <string>
 #include <ostream>
 
+/*
+Абстарктен базов клас за фигурите от SVG.
+Общ интерфайс, който има виртуален деструктор,
+за да гарантира гладкото освобождаване на
+паметта
+*/
+
 class Figure {
 public:
 	virtual void translate(double x, double y) = 0;

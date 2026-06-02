@@ -52,11 +52,11 @@ void Figures::print(std::ostream& os) const {
 void Figures::create(const Figure& other) {
 	figures.push_back(other.clone());
 }
-
+// Функцията е булева, за да връща информация за валидността на индекса
 bool Figures::erase(size_t ind) {
 
 	if (ind == 0 || ind > figures.size()) {
-		//No such index;
+		//Няма такъв индекс
 		return false;
 	}
 	ind--;
@@ -64,14 +64,14 @@ bool Figures::erase(size_t ind) {
 	figures.erase(figures.begin() + ind);
 	return true;
 }
-
-void Figures::translate(size_t ind, double x, double y) {
+// Функцията е булева, за да връща информация за валидността на индекса
+bool Figures::translate(size_t ind, double dx, double dy) {
 	if (ind == 0 || ind > figures.size()) {
-		std::cout << "There is no figure number " << ind << "!\n";
-		return;
+		return false;
 	}
 	ind--;
-	figures[ind]->translate(x, y);
+	figures[ind]->translate(dx, dy);
+	return true;
 }
 
 void Figures::translate(double x, double y) {
@@ -89,12 +89,13 @@ void Figures::isWithinCircle(double x, double y, double r) const {
 			std::cout << i + 1 << ". ";
 			figures[i]->print(std::cout);
 			any = true;
+			std::cout << "\n";
 		}
 	}
 	if (!any) {
-		std::cout << "No figures are located within circle " << x << " " << y << " " << r;
+		std::cout << "No figures are located within circle " << x << " " << y << " " << r << "\n";
 	}
-	std::cout << "\n";
+
 }
 
 void Figures::isWithinRectangle(double x, double y, double width, double height) const {
@@ -105,12 +106,12 @@ void Figures::isWithinRectangle(double x, double y, double width, double height)
 			std::cout << i + 1 << ". ";
 			figures[i]->print(std::cout);
 			any = true;
+			std::cout << "\n";
 		}
 	}
 	if (!any) {
-		std::cout << "No figures are located within rectangle " << x << " " << y << " " << width << " " << height;
+		std::cout << "No figures are located within rectangle " << x << " " << y << " " << width << " " << height << "\n";
 	}
-	std::cout << "\n";
 }
 
 std::string  Figures::serializeSVG() const {
@@ -128,6 +129,8 @@ void Figures::clear() {
 	figures.clear();
 }
 
+// Чете от вече обработен поток, който садържа само фигури от проекта.
+// Всяко от виканията на статичните методи ще завърши точно след като прочете затварящ />
 void Figures::deserialize(std::istream& in) {
 	clear();
 

@@ -1,5 +1,5 @@
 #include "Rectangle.h"
-#include "SvgFun.h"
+#include "Utils.h"
 #include <ostream>
 #include <istream>
 
@@ -16,22 +16,24 @@ void Rectangle::print(std::ostream& os) const {
 	os << "rectangle " << x << " " << y << " " << width << " " << height << " " << fill;
 }
 
+//Проверява дали четирите точки са вътре в кръга. Ако е така то цялата фигура е там.
 bool Rectangle::isWithinCircle(double cx, double cy, double r) const {
 	if ((cx - x) * (cx - x) + (cy - y) * (cy - y) > r * r) {
-		return 0;
+		return false;
 	}
 	if ((cx - (x + width)) * (cx - (x + width)) + (cy - y) * (cy - y) > r * r) {
-		return 0;
+		return false;
 	}
 	if ((cx - x) * (cx - x) + (cy - (y + height)) * (cy - (y + height)) > r * r) {
-		return 0;
+		return false;
 	}
 	if ((cx - (x + width)) * (cx - (x + width)) + (cy - (y + height)) * (cy - (y + height)) > r * r) {
-		return 0;
+		return false;
 	}
-	return 1;
+	return true;
 }
 
+//Проверява дали четирите точки са вътре в правоъгълника. Ако е така то цялата фигура е там.
 bool Rectangle::isWithinRectangle(double x, double y, double width, double height) const {
 	if (this->x < x || this->y < y) {
 		return false;
@@ -63,7 +65,9 @@ Figure* Rectangle::clone() const {
 std::string Rectangle::type() const {
 	return "rectangle";
 }
-
+// От другите функции имаме гаранция, че ще има затварящ />
+// Ако стойността е невалидна std::stod ще хвърли expetion, които 
+// ше бъде хванат.
 Rectangle Rectangle::deserialize(std::istream& is) {
 	std::string token;
 
